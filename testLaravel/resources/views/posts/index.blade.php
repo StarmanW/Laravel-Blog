@@ -13,7 +13,7 @@
                 <div class="container">
                     <div class="well border" style="background:#eaeaea;padding:3%; margin-bottom: 2%;">
                         <h2><a href="/posts/{{$post->id}}">{!! $post->title !!}</a></h2>
-                        <small>Written on <?php echo date_format($post->created_at, "Y F d");?></small>
+                        <small>Written on <?php echo date_format($post->created_at, "Y F d");?> by {{$post->user->name}}</small>
                     </div>
                 </div>
             @endforeach

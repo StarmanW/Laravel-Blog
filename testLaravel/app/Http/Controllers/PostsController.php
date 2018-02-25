@@ -7,6 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use App\Post;
 
 class PostsController extends Controller {
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        $this->middleware('auth', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -49,7 +59,7 @@ class PostsController extends Controller {
      */
     public function store(Request $request) {
         $this->validate($request, [
-            'title'=> ['required'],
+            'title'=> ['required', 'regex:/^[A-z0-9@\#\$\%\&\!\[\]\'\: ]$/'],
             'body'=>['required']
         ]);
 
@@ -130,6 +140,7 @@ class PostsController extends Controller {
         if(!Auth::check()) {
             return redirect('/login')->with('error', 'Please login to delete post');
         } else {
+
             $post = Post::find($id);
             $post->delete();
             return redirect('/posts')->with('success', 'Post (' . $post->title . ') has been successfully deleted!');

@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="{{asset('img/logo.jpg')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
+    <link rel="stylesheet" href="{{asset('css/navbar.css')}}">
     <title>@yield('title')</title>
-
 </head>
 <body>
     @include('templates.navbar')

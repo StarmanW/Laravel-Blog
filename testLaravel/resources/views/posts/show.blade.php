@@ -5,7 +5,7 @@
         <div class="well border" style="background:#eaeaea;padding:3%; margin-bottom: 2%;">
             <h1 class="text-center">{!! $post->title !!}</h1>
             <p class="text-center" style="font-size: 90%">Written
-                on <?php echo date_format($post->created_at, "Y F d");?></p>
+                on <?php echo date_format($post->created_at, "Y F d");?> by {{$post->user->name}}</p>
 
             <div class="container" style="padding:auto">
                 <div class="row justify-content-center">

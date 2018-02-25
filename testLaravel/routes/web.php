@@ -27,7 +27,7 @@ Route::get('/', function() {
 */
 
 Route::get('/', 'PagesController@index');
-Route::get('/welcome', 'WelcomeController@index');
+Route::get('/dashboard', 'DashboardController@index');
 Route::get('/about', 'PagesController@about');
 Route::get('/services', 'PagesController@services');
 Route::get('/login', 'PagesController@login');

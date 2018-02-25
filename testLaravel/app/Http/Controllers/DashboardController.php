@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WelcomeController extends Controller {
+class DashboardController extends Controller {
     /**
      * Create a new controller instance.
      *
@@ -22,6 +22,7 @@ class WelcomeController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return view('templates.welcome')->with('user', Auth::user());
+        $posts = Post::where('user_id', Auth::user()->id)->paginate(10);
+        return view('templates.dashboard')->with('posts', $posts);
     }
 }
