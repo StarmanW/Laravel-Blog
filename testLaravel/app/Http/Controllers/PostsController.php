@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Post;
 
 class PostsController extends Controller {
@@ -32,7 +33,12 @@ class PostsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return view('posts.create');
+        //Authentication check
+        if(!Auth::check()) {
+            return redirect('/login')->with('error', 'Please login to create post');
+        } else {
+            return view('posts.create');
+        }
     }
 
     /**
@@ -43,10 +49,19 @@ class PostsController extends Controller {
      */
     public function store(Request $request) {
         $this->validate($request, [
-            'title'=>'required',
-            'body'=>'required'
+            'title'=> ['required'],
+            'body'=>['required']
         ]);
 
+        //Create a Post
+        $post = new Post();
+        $post->title = $request->input('title');
+        $post->body = $request->input('body');
+        $post->user_id = \auth()->user()->id;
+        $post->save();
+
+        //Redirect back to page
+        return redirect('/posts')->with('success', 'Post (' . $post->title . ') has been successfully created!');
     }
 
     /**
@@ -67,7 +82,18 @@ class PostsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        //
+        //Authentication check
+        if(!Auth::check()) {
+            return redirect('/login')->with('error', 'Please login to edit post');
+        } else {
+            $post = Post::find($id);
+
+            if(Auth::user()->id === $post->user_id) {
+                return view('posts.edit')->with('post', $post);
+            } else {
+                return redirect('/posts/' . $id)->with('error', 'Cannot edit other user\'s post');
+            }
+        }
     }
 
     /**
@@ -78,7 +104,19 @@ class PostsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        //
+        $this->validate($request, [
+            'title'=> ['required'],
+            'body'=>['required']
+        ]);
+
+        //Create a Post
+        $post = Post::find($id);
+        $post->title = $request->input('title');
+        $post->body = $request->input('body');
+        $post->save();
+
+        //Redirect back to page
+        return redirect('/posts/' . $post->id)->with('success', 'Post (' . $post->title . ') has been successfully updated!');
     }
 
     /**
@@ -88,6 +126,13 @@ class PostsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        //
+        //Authentication check
+        if(!Auth::check()) {
+            return redirect('/login')->with('error', 'Please login to delete post');
+        } else {
+            $post = Post::find($id);
+            $post->delete();
+            return redirect('/posts')->with('success', 'Post (' . $post->title . ') has been successfully deleted!');
+        }
     }
 }

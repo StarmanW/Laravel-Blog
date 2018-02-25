@@ -1,6 +1,9 @@
 @extends('templates.app')
 
 @section('content')
-    <h1>{{$title}}</h1>
-    <p>This is the about page.</p>
+    <div class="container text-center col-lg-6">
+        <h1>{{$title}}</h1>
+        <hr />
+        <p>This is just a simple blogging website created as a practice.</p>
+    </div>
 @endsection

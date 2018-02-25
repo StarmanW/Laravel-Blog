@@ -8,11 +8,19 @@
             {{Form::label('title', 'Title')}}
             {{Form::text('title', '', ['class'=>'form-control', 'placeholder'=>'title'])}}
         </div>
+
         <div class="form-group">
             {{Form::label('body', 'body')}}
             {{Form::textarea('body', '', ['class'=>'form-control', 'placeholder'=>'Body Text'])}}
         </div>
-        {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+
+        <div class="container" style="padding:auto">
+            <div class="row justify-content-center">
+                {{Form::submit('Submit', ['class'=>'btn btn-success'])}}&nbsp;&nbsp;
+                {{Form::reset('Reset', ['class'=>'btn btn-primary'])}}
+            </div>
+        </div>
+
         {!! Form::close() !!}
     </div>
 @endsection

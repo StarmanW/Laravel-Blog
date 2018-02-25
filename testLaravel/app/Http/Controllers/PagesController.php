@@ -21,9 +21,25 @@ class PagesController extends Controller {
     public function services() {
         $data = array(          //Add the title for services.blade.php
             'title' => 'Services',
-            'services' => ['Web Design', 'Programming', 'SEO']
+            'services' => ['Good Blogging Site', 'Top-notch user blogging experience :3', 'We have good <a target="_blank" href="https://i.imgur.com/Entxsw6.jpg" style="font-size: 120%"><b>meme</b></a>', 'Some Third Services that I\'m out of idea ;w;']
         );
 
         return view('pages.services')->with($data);
     }
+
+    //Returns the login page
+    public function login() {
+        return view('auth.login');
+    }
+
+    //Returns the register page
+    public function register() {
+        return view('auth.register');
+    }
+
+    //Returns the register page
+    public function passReset() {
+        return view('auth.passwords.reset');
+    }
+
 }

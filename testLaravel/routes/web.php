@@ -27,9 +27,17 @@ Route::get('/', function() {
 */
 
 Route::get('/', 'PagesController@index');
+Route::get('/welcome', 'WelcomeController@index');
 Route::get('/about', 'PagesController@about');
 Route::get('/services', 'PagesController@services');
+Route::get('/login', 'PagesController@login');
+Route::get('/register', 'PagesController@register');
+Route::get('/password/reset', 'PagesController@passReset');
 
 //Generate all the routes for methods in PostsController
 //PARAM1: URI name, PARAM2: Class name
 Route::resource('posts', 'PostsController');
+
+
+Auth::routes();
+//Route::get('/home', 'HomeController@index')->name('home');
