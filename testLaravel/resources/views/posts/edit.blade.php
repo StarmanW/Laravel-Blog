@@ -1,7 +1,8 @@
 @extends('templates.app')
+@section('title')Editing {!! $post->title !!}@endsection
 
 @section('content')
-    <h1 class="text-center">Edit Post</h1>
+    <h1 class="text-center">Editing Post - {!! $post->title !!}</h1>
     <div class="container col-lg-10">
         {!! Form::open(['action' => ['PostsController@update', $post->id], 'method'=>'POST']) !!}
         <div class="form-group">

@@ -1,4 +1,5 @@
 @extends('templates.app')
+@section('title', 'About Us')
 
 @section('content')
     <div class="container text-center col-lg-6">

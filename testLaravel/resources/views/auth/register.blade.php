@@ -1,4 +1,5 @@
 @extends('templates.app')
+@section('title', 'Register Account')
 
 @section('content')
 <div class="container">

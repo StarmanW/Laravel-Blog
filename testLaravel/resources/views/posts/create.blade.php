@@ -1,4 +1,5 @@
 @extends('templates.app')
+@section('title', 'Create Post')
 
 @section('content')
     <h1 class="text-center">Create Post</h1>
