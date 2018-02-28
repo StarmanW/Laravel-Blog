@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Post;
 
 class PostsController extends Controller {
@@ -44,7 +45,7 @@ class PostsController extends Controller {
      */
     public function create() {
         //Authentication check
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             return redirect('/login')->with('error', 'Please login to create post');
         } else {
             return view('posts.create');
@@ -59,15 +60,44 @@ class PostsController extends Controller {
      */
     public function store(Request $request) {
         $this->validate($request, [
-            'title'=> ['required', 'regex:/^[A-z0-9@\#\$\%\&\!\[\]\'\: ]$/'],
-            'body'=>['required']
+            'title' => 'required|regex:/[A-z0-9\@\#\$\%\&\!\[\]\'\: ]+/',
+            'body' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
+
+        //Handle file upload
+        if ($request->hasFile('cover_image')) {
+            //Get filename
+            $fileNameWithExt = $request->file('cover_image')->getClientOriginalName();
+
+            //Get just filename
+            $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+
+            //Get just extension
+            $extension = $request->file('cover_image')->getClientOriginalExtension();
+
+            //Filename to store, add timestamp for uniqueness of images that
+            //might have the same name.
+            $fileNameToStore = $fileName . '_' . time() . '.' . $extension;
+
+            //Upload Image
+            /*
+             * By default, storage folder is not accessible.
+             * Required to run "php artisan storage:link" command to create a sym link
+             * between the storage folder and the public folder.
+             */
+            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+
+        } else {
+            $fileNameToStore = 'default_cover.jpg';
+        }
 
         //Create a Post
         $post = new Post();
         $post->title = $request->input('title');
         $post->body = $request->input('body');
         $post->user_id = \auth()->user()->id;
+        $post->cover_image = $fileNameToStore;
         $post->save();
 
         //Redirect back to page
@@ -93,12 +123,12 @@ class PostsController extends Controller {
      */
     public function edit($id) {
         //Authentication check
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             return redirect('/login')->with('error', 'Please login to edit post');
         } else {
             $post = Post::find($id);
 
-            if(Auth::user()->id === $post->user_id) {
+            if (Auth::user()->id === $post->user_id) {
                 return view('posts.edit')->with('post', $post);
             } else {
                 return redirect('/posts/' . $id)->with('error', 'Cannot edit other user\'s post');
@@ -115,18 +145,52 @@ class PostsController extends Controller {
      */
     public function update(Request $request, $id) {
         $this->validate($request, [
-            'title'=> ['required'],
-            'body'=>['required']
+            'title' => ['required'],
+            'body' => ['required']
         ]);
 
-        //Create a Post
         $post = Post::find($id);
-        $post->title = $request->input('title');
-        $post->body = $request->input('body');
-        $post->save();
 
-        //Redirect back to page
-        return redirect('/posts/' . $post->id)->with('success', 'Post (' . $post->title . ') has been successfully updated!');
+        if (Auth::user()->id === $post->user_id) {
+
+            //Handle file upload
+            if ($request->hasFile('cover_image')) {
+                //Get filename
+                $fileNameWithExt = $request->file('cover_image')->getClientOriginalName();
+
+                //Get just filename
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+
+                //Get just extension
+                $extension = $request->file('cover_image')->getClientOriginalExtension();
+
+                //Filename to store, add timestamp for uniqueness of images that
+                //might have the same name.
+                $fileNameToStore = $fileName . '_' . time() . '.' . $extension;
+
+                //Upload Image
+                /*
+                 * By default, storage folder is not accessible.
+                 * Required to run "php artisan storage:link" command to create a sym link
+                 * between the storage folder and the public folder.
+                 */
+                $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+
+            }
+
+            //Update the Post
+            $post->title = $request->input('title');
+            $post->body = $request->input('body');
+            if ($request->hasFile('cover_image')) {
+                $post->cover_image = $fileNameToStore;
+            }
+            $post->save();
+
+            //Redirect back to page
+            return redirect('/posts/' . $post->id)->with('success', 'Post (' . $post->title . ') has been successfully updated!');
+        } else {
+            return redirect('/posts/' . $id)->with('error', 'Cannot update other user\'s post');
+        }
     }
 
     /**
@@ -137,13 +201,26 @@ class PostsController extends Controller {
      */
     public function destroy($id) {
         //Authentication check
-        if(!Auth::check()) {
+        if (!Auth::check()) {
             return redirect('/login')->with('error', 'Please login to delete post');
         } else {
-
             $post = Post::find($id);
-            $post->delete();
-            return redirect('/posts')->with('success', 'Post (' . $post->title . ') has been successfully deleted!');
+
+            if (Auth::user()->id === $post->user_id) {
+
+                //Validate image name.
+                //If not default image, delete it; else keep it.
+                if($post->cover_image !== 'default_cover.jpg') {
+                    //Delete the image
+                    Storage::delete('public/cover_images/' . $post->cover_image);
+                }
+
+                $post->delete();
+                return redirect('/posts')->with('success', 'Post (' . $post->title . ') has been successfully deleted!');
+            } else {
+                return redirect('/posts/' . $id)->with('error', 'Cannot delete other user\'s post');
+            }
         }
     }
+
 }

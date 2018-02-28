@@ -4,7 +4,8 @@
 @section('content')
     <h1 class="text-center">Editing Post - {!! $post->title !!}</h1>
     <div class="container col-lg-10">
-        {!! Form::open(['action' => ['PostsController@update', $post->id], 'method'=>'POST']) !!}
+        {!! Form::open(['action' => ['PostsController@update', $post->id], 'method'=>'POST', 'enctype' => 'multipart/form-data']) !!}
+        @csrf
         <div class="form-group">
             {{Form::label('title', 'Title')}}
             {{Form::text('title', $post->title, ['class'=>'form-control', 'placeholder'=>'title'])}}
@@ -17,6 +18,9 @@
         {{Form::hidden('_method', 'PUT')}}
 
         <div class="row justify-content-center">
+            <div class="container">
+                {{Form::file('cover_image')}}
+            </div>
             {{Form::submit('Update', ['class'=>'btn btn-success'])}}&nbsp;
             {{Form::reset('Reset', ['class'=>'btn btn-primary'])}}&nbsp;
             <a class="btn btn-primary" href="/posts/">Back</a>

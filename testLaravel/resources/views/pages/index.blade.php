@@ -2,7 +2,7 @@
 @section('title', 'StarmanW\'s Blog')
 @section('content')
     <div class="jumbotron text-center">
-        <h1>{{$title}}</h1>
+        <h1>StarmanW's Blog</h1>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In blandit nulla ac enim pellentesque venenatis. Aenean a venenatis ipsum.</p>
         <p>
             @guest

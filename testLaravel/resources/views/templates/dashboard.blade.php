@@ -38,6 +38,7 @@
                                         <td><a class="btn btn-primary" href="/posts/{{$post->id}}/edit">Edit</a></td>
                                         <td>
                                             {!! Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST']) !!}
+                                            @csrf
                                             {!! Form::hidden('_method', 'DELETE') !!}
                                             {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                                             {!! Form::close() !!}

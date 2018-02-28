@@ -4,6 +4,7 @@
     <div class="container col-lg">
         <div class="well border" style="background:#eaeaea;padding:3%; margin-bottom: 2%;">
             <h1 class="text-center">{!! $post->title !!}</h1>
+            <img style="width:100%" src="/storage/cover_images/{{$post->cover_image}}" />
             <p class="text-center" style="font-size: 90%">Written
                 on <?php echo date_format($post->created_at, "Y F d");?> by {{$post->user->name}}</p>
 
@@ -15,6 +16,7 @@
                         @if(\Illuminate\Support\Facades\Auth::user()->id === $post->user_id)
                         <a class="btn btn-primary" href="/posts/{{$post->id}}/edit">Edit</a>&nbsp;&nbsp;
                         {!! Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST']) !!}
+                        @csrf
                         {!! Form::hidden('_method', 'DELETE') !!}
                         {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
                         {!! Form::close() !!}

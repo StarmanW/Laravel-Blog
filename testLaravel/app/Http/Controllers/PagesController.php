@@ -3,18 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PagesController extends Controller {
     //Returns the main index page
     public function index() {
-        $title = 'StarmanW\'s Blog';    //Add the title for index.blade.php
-        return view('pages.index')->with('title', $title);
+        return view('pages.index');
     }
 
     //Returns the about page
     public function about() {
-        $title = 'About Us';    //Add the title for about.blade.php
-        return view('pages.about')->with('title', $title);
+        return view('pages.about');
     }
 
     //Returns the services page
@@ -40,6 +39,19 @@ class PagesController extends Controller {
     //Returns the register page
     public function passReset() {
         return view('auth.passwords.reset');
+    }
+
+    /*
+     * Get the value from the URL parameter
+     * and echo it out
+    public function getParam(Request $request) {
+        echo $request->input('name');       //Also works if using $request->name;
+    }
+     */
+
+    /* SANDBOX AREA */
+    public function sandbox() {
+        return view('sandbox.test')->with('test', '');
     }
 
 }

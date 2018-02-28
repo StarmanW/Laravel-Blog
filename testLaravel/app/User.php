@@ -27,6 +27,14 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /*
+     * Creating one-to-many relationship
+     *
+     * Laravel will expect a user id column on Post table.
+     * Otherwise, you could specify it as follow:
+     *
+     * return $this->hasMany(Post::class, 'user_id');
+     */
     public function posts() {
         return $this->hasMany('App\Post');
     }
